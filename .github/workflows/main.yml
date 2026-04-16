@@ -33,8 +33,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright tests
-        # The --headless flag is CRITICAL for GitHub Actions
-        run: npx playwright test --headless
+        run: npx playwright test
         env:
           SEP_USERNAME: ${{ secrets.SEP_USERNAME }}
           SEP_PASSWORD: ${{ secrets.SEP_PASSWORD }}
@@ -48,9 +47,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-cucumber-report
-          path: |
-            reports/
-            test-results/
-            playwright-report/
+          name: playwright-report
+          path: playwright-report/
           retention-days: 30
