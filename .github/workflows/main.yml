@@ -32,25 +32,23 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Configure environment variables
-        run: |
-          echo "SEP_USERNAME=${{ secrets.SEP_USERNAME }}" >> $GITHUB_ENV
-          echo "SEP_PASSWORD=${{ secrets.SEP_PASSWORD }}" >> $GITHUB_ENV
-          echo "SEP_QA_URL=${{ secrets.SEP_QA_URL }}" >> $GITHUB_ENV
-          echo "CARD_NUMBER=${{ secrets.CARD_NUMBER }}" >> $GITHUB_ENV
-          echo "CARD_EXPIRATION_DATE=${{ secrets.CARD_EXPIRATION_DATE }}" >> $GITHUB_ENV
-          echo "CARD_SECURITY_CODE=${{ secrets.CARD_SECURITY_CODE }}" >> $GITHUB_ENV
-          echo "ZIP_CODE=${{ secrets.ZIP_CODE }}" >> $GITHUB_ENV
-
       - name: Run Playwright tests
-        run: npm test # Ensure this matches the script name in package.json
+        # The --headless flag is CRITICAL for GitHub Actions
+        run: npx playwright test --headless
+        env:
+          SEP_USERNAME: ${{ secrets.SEP_USERNAME }}
+          SEP_PASSWORD: ${{ secrets.SEP_PASSWORD }}
+          SEP_QA_URL: ${{ secrets.SEP_QA_URL }}
+          CARD_NUMBER: ${{ secrets.CARD_NUMBER }}
+          CARD_EXPIRATION_DATE: ${{ secrets.CARD_EXPIRATION_DATE }}
+          CARD_SECURITY_CODE: ${{ secrets.CARD_SECURITY_CODE }}
+          ZIP_CODE: ${{ secrets.ZIP_CODE }}
 
       - name: Upload Test Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-cucumber-report
-          # Update this path to match your config (e.g., 'playwright-report/' or 'cucumber-report.html')
           path: |
             reports/
             test-results/
