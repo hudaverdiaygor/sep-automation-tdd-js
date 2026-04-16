@@ -18,7 +18,8 @@ export default defineConfig({
   use: {
     baseURL: "",
     trace: 'on-first-retry',
-    headless: false,
+    // If CI environment variable exists, run headless. Otherwise, run headed.
+    headless: !!process.env.CI, 
   },
 
   projects: [
